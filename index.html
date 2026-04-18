@@ -196,22 +196,6 @@
   .btn-ghost:hover { color: var(--text); background: var(--tab-bg); }
   .btn-ghost.active { color: var(--accent); }
 
-  .category-picker {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  .cat-dot {
-    width: 22px; height: 22px;
-    border-radius: 50%;
-    cursor: pointer;
-    border: 2.5px solid transparent;
-    transition: all 0.15s;
-    flex-shrink: 0;
-  }
-  .cat-dot:hover { transform: scale(1.2); }
-  .cat-dot.selected { border-color: #5a4170; transform: scale(1.18); }
-
   .label-sm {
     font-size: 0.72rem;
     color: var(--text-light);
@@ -333,42 +317,95 @@
   }
   .tooltip.show { opacity: 1; }
 
-  /* ── Legend ── */
-  .legend {
-    position: absolute;
-    bottom: 14px;
-    left: 16px;
-    background: var(--panel);
-    border: 1.5px solid var(--border);
-    border-radius: 16px;
-    padding: 10px 14px;
-    box-shadow: var(--shadow-sm);
+  /* ── Info bar (title + category tags) ── */
+  .info-bar {
     display: flex;
-    flex-direction: column;
-    gap: 5px;
-    z-index: 50;
-    max-width: 160px;
+    align-items: center;
+    gap: 14px;
+    padding: 7px 18px;
+    background: var(--panel);
+    border-bottom: 1.5px solid var(--border);
+    flex-shrink: 0;
+    flex-wrap: wrap;
   }
-  .legend-title {
-    font-size: 0.7rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--text-light);
-    margin-bottom: 2px;
-  }
-  .legend-item {
+  .info-bar-title {
     display: flex;
     align-items: center;
     gap: 7px;
-    font-size: 0.77rem;
-    color: var(--text);
-    font-weight: 600;
-  }
-  .legend-swatch {
-    width: 14px; height: 14px;
-    border-radius: 4px;
     flex-shrink: 0;
+  }
+  .info-title-text {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.95rem;
+    color: var(--text);
+    background: none;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 3px 7px;
+    border-radius: 8px;
+    transition: background 0.15s;
+    max-width: 200px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .info-title-text:hover { background: var(--tab-bg); }
+  .info-title-edit-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-light);
+    font-size: 0.85rem;
+    padding: 2px 5px;
+    border-radius: 6px;
+    transition: color 0.13s, background 0.13s;
+    line-height: 1;
+  }
+  .info-title-edit-btn:hover { color: var(--accent); background: var(--tab-bg); }
+  .info-bar-sep {
+    width: 1px; height: 20px;
+    background: var(--border);
+    flex-shrink: 0;
+  }
+  .info-tags {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    flex: 1;
+  }
+  .info-tags-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--text-light);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+  .cat-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px 3px 7px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 1.5px solid transparent;
+    white-space: nowrap;
+    transition: transform 0.13s;
+  }
+  .cat-tag:hover { transform: scale(1.05); }
+  .cat-tag-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .info-tags-empty {
+    font-size: 0.75rem;
+    color: var(--text-light);
+    font-style: italic;
   }
 
   /* ── Minimap ── */
@@ -478,7 +515,68 @@
     padding: 0;
   }
 
-  @keyframes pop {
+  /* ── Floating node action panel ── */
+  .node-actions {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: #fff;
+    border: 1.5px solid var(--border);
+    border-radius: 30px;
+    padding: 5px 8px;
+    box-shadow: 0 6px 24px rgba(160,100,220,0.18);
+    z-index: 200;
+    pointer-events: all;
+    opacity: 0;
+    transform: translateY(6px) scale(0.95);
+    transition: opacity 0.18s, transform 0.18s;
+  }
+  .node-actions.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+  .node-actions.hidden { display: none; }
+
+  .na-btn {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px 11px;
+    border-radius: 20px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 700;
+    font-size: 0.76rem;
+    transition: all 0.14s;
+    white-space: nowrap;
+  }
+  .na-btn-edit {
+    background: linear-gradient(135deg,#e8d5fb,#cce8ff);
+    color: #4a2a70;
+  }
+  .na-btn-edit:hover { filter: brightness(0.95); transform: scale(1.04); }
+
+  .na-btn-child {
+    background: linear-gradient(135deg,#c8f7e4,#cce8ff);
+    color: #1a5a48;
+  }
+  .na-btn-child:hover { filter: brightness(0.95); transform: scale(1.04); }
+
+  .na-sep {
+    width: 1px; height: 20px;
+    background: var(--border);
+    margin: 0 2px;
+    flex-shrink: 0;
+  }
+
+  .na-btn-del {
+    background: #fff0f3;
+    color: #c0405a;
+    border: 1.5px solid #f4b8c4;
+  }
+  .na-btn-del:hover { background: #ffe0e6; transform: scale(1.04); }
     0% { transform: scale(0.7); opacity: 0; }
     70% { transform: scale(1.06); }
     100% { transform: scale(1); opacity: 1; }
@@ -501,15 +599,25 @@
   <button class="tab-add" id="btnAddCanvas" title="New canvas">＋</button>
 </div>
 
+<!-- Info Bar: Title + Category Tags -->
+<div class="info-bar" id="infoBar">
+  <div class="info-bar-title">
+    <span class="info-title-text" id="infoTitle" title="Click to rename">Untitled</span>
+    <button class="info-title-edit-btn" id="infoTitleEditBtn" title="Rename canvas">✏️</button>
+  </div>
+  <div class="info-bar-sep"></div>
+  <span class="info-tags-label">Tags:</span>
+  <div class="info-tags" id="infoTags">
+    <span class="info-tags-empty">No categories yet</span>
+  </div>
+</div>
+
 <!-- Toolbar -->
 <div class="toolbar">
   <div class="toolbar-group">
     <button class="btn btn-primary" id="btnAddNode">✦ Add Node</button>
     <button class="btn btn-outline" id="btnAddChild">⤷ Add Child</button>
   </div>
-  <div class="toolbar-sep"></div>
-  <span class="label-sm">Category:</span>
-  <div class="category-picker" id="categoryPicker"></div>
   <div class="toolbar-sep"></div>
   <div class="toolbar-group">
     <button class="btn btn-ghost" id="btnLayout" title="Auto-layout">⟳ Layout</button>
@@ -545,11 +653,16 @@
     <button class="zoom-btn" id="zoomOut">－</button>
   </div>
 
-  <!-- Hint -->
-  <div class="hint">Double-click canvas to add node · Drag to pan · Scroll to zoom</div>
+  <!-- Floating node action panel -->
+  <div class="node-actions hidden" id="nodeActions">
+    <button class="na-btn na-btn-edit" id="naEdit">✏️ Edit</button>
+    <button class="na-btn na-btn-child" id="naChild">⤷ Add Child</button>
+    <div class="na-sep"></div>
+    <button class="na-btn na-btn-del" id="naDel">🗑 Delete</button>
+  </div>
 
-  <!-- Legend -->
-  <div class="legend" id="legend"></div>
+  <!-- Hint -->
+  <div class="hint">Click node to select · Double-click or use ✏️ Edit to edit · Drag to pan · Scroll to zoom</div>
 </div>
 
 <!-- Add/Edit Node Modal -->
@@ -705,6 +818,7 @@ function switchCanvas(id) {
   fitView();
   renderTabs();
   renderAll();
+  renderInfoBar(activeData());
 }
 
 function deleteCanvas(id) {
@@ -750,7 +864,7 @@ function renderAll() {
   if (!data) return;
   data.edges.forEach(e => renderEdge(e, data));
   data.nodes.forEach(n => renderNode(n));
-  renderLegend(data);
+  renderInfoBar(data);
 }
 
 function renderEdge(edge, data) {
@@ -848,26 +962,105 @@ function renderNode(node) {
   nLayer.appendChild(g);
 }
 
-function renderLegend(data) {
-  const leg = document.getElementById('legend');
-  const usedCats = [...new Set(data.nodes.map(n => n.cat))];
-  leg.innerHTML = `<div class="legend-title">Categories</div>`;
-  CATEGORIES.filter(c => usedCats.includes(c.id)).forEach(cat => {
-    const item = document.createElement('div');
-    item.className = 'legend-item';
-    item.innerHTML = `<span class="legend-swatch" style="background:${cat.fill};border:2px solid ${cat.stroke}"></span>${escHtml(cat.label)}`;
-    leg.appendChild(item);
+function renderInfoBar(data) {
+  // Title
+  const titleEl = document.getElementById('infoTitle');
+  if (data) {
+    // Strip emoji prefix if present for display (keep in tab)
+    const name = data.name.replace(/^\p{Emoji}\s*/u, '');
+    titleEl.textContent = name;
+    titleEl.title = 'Click to rename: ' + name;
+  }
+
+  // Category tags
+  const tagsWrap = document.getElementById('infoTags');
+  tagsWrap.innerHTML = '';
+  if (!data || data.nodes.length === 0) {
+    tagsWrap.innerHTML = '<span class="info-tags-empty">No categories yet</span>';
+    return;
+  }
+  const usedCatIds = [...new Set(data.nodes.map(n => n.cat))];
+  const usedCats = CATEGORIES.filter(c => usedCatIds.includes(c.id));
+  if (usedCats.length === 0) {
+    tagsWrap.innerHTML = '<span class="info-tags-empty">No categories yet</span>';
+    return;
+  }
+  usedCats.forEach(cat => {
+    const count = data.nodes.filter(n => n.cat === cat.id).length;
+    const tag = document.createElement('span');
+    tag.className = 'cat-tag';
+    tag.style.background = cat.fill;
+    tag.style.borderColor = cat.stroke;
+    tag.style.color = cat.text;
+    tag.title = `${cat.label}: ${count} node${count !== 1 ? 's' : ''}`;
+    tag.innerHTML = `<span class="cat-tag-dot" style="background:${cat.stroke}"></span>${escHtml(cat.label)}<span style="opacity:0.6;font-size:0.68rem;margin-left:2px">${count}</span>`;
+    tagsWrap.appendChild(tag);
   });
-  if (usedCats.length === 0) leg.style.display = 'none';
-  else leg.style.display = 'flex';
 }
 
 // ═══════════════════════════════════════
-//  SELECTION
+//  SELECTION + FLOATING ACTION PANEL
 // ═══════════════════════════════════════
+const nodeActions = document.getElementById('nodeActions');
+
 function selectNode(id) {
   selectedNode = id;
   renderAll();
+  if (id) {
+    positionNodeActions(id);
+  } else {
+    hideNodeActions();
+  }
+}
+
+function positionNodeActions(nodeId) {
+  const data = activeData();
+  const node = data && data.nodes.find(n => n.id === nodeId);
+  if (!node) { hideNodeActions(); return; }
+
+  // Convert SVG node center to screen coords
+  const wrap = document.getElementById('canvasWrap');
+  const wRect = wrap.getBoundingClientRect();
+
+  const screenX = pan.x + node.x * zoom;
+  const screenY = pan.y + node.y * zoom;
+  const screenW = node.w * zoom;
+  const screenH = node.h * zoom;
+
+  // Position panel below the node, centred
+  nodeActions.classList.remove('hidden');
+  // Temporarily visible to measure width
+  nodeActions.style.opacity = '0';
+  nodeActions.style.display = 'flex';
+  const panelW = nodeActions.offsetWidth;
+  const panelH = nodeActions.offsetHeight;
+
+  let left = screenX + screenW / 2 - panelW / 2;
+  let top  = screenY + screenH + 10;
+
+  // Keep within canvas bounds
+  left = Math.max(8, Math.min(left, wRect.width - panelW - 8));
+  if (top + panelH > wRect.height - 8) {
+    top = screenY - panelH - 10; // flip above if no room below
+  }
+
+  nodeActions.style.left = left + 'px';
+  nodeActions.style.top  = top  + 'px';
+
+  // Trigger transition
+  requestAnimationFrame(() => {
+    nodeActions.classList.add('visible');
+    nodeActions.style.opacity = '';
+  });
+}
+
+function hideNodeActions() {
+  nodeActions.classList.remove('visible');
+  setTimeout(() => {
+    if (!nodeActions.classList.contains('visible')) {
+      nodeActions.classList.add('hidden');
+    }
+  }, 180);
 }
 
 // ═══════════════════════════════════════
@@ -1129,24 +1322,6 @@ let activeCat = CATEGORIES[4].id;
 
 function getSelectedCat() { return activeCat; }
 
-function buildCategoryPicker() {
-  const picker = document.getElementById('categoryPicker');
-  picker.innerHTML = '';
-  CATEGORIES.forEach(cat => {
-    const dot = document.createElement('div');
-    dot.className = 'cat-dot' + (cat.id === activeCat ? ' selected' : '');
-    dot.style.background = cat.fill;
-    dot.style.borderColor = cat.stroke;
-    dot.title = cat.label;
-    dot.dataset.catId = cat.id;
-    dot.addEventListener('click', () => {
-      activeCat = cat.id;
-      picker.querySelectorAll('.cat-dot').forEach(d => d.classList.toggle('selected', d.dataset.catId === cat.id));
-    });
-    picker.appendChild(dot);
-  });
-}
-
 // ═══════════════════════════════════════
 //  NODE DRAG
 // ═══════════════════════════════════════
@@ -1176,6 +1351,10 @@ svg.addEventListener('mousedown', e => {
     svg.classList.add('panning');
     panStart.x = e.clientX - pan.x;
     panStart.y = e.clientY - pan.y;
+    // Clicking background deselects
+    selectedNode = null;
+    hideNodeActions();
+    renderAll();
   }
 });
 
@@ -1195,6 +1374,9 @@ window.addEventListener('mousemove', e => {
 });
 
 window.addEventListener('mouseup', () => {
+  if (draggingNode && selectedNode) {
+    positionNodeActions(selectedNode);
+  }
   draggingNode = null;
   isPanning = false;
   svg.classList.remove('panning');
@@ -1209,6 +1391,7 @@ svg.addEventListener('wheel', e => {
   zoom *= factor;
   zoom = Math.min(Math.max(zoom, 0.15), 4);
   applyViewport();
+  if (selectedNode) positionNodeActions(selectedNode);
 }, { passive: false });
 
 svg.addEventListener('dblclick', e => {
@@ -1225,13 +1408,34 @@ document.getElementById('zoomOut').addEventListener('click', () => {
 });
 document.getElementById('zoomReset').addEventListener('click', fitView);
 
+// Floating action panel buttons
+document.getElementById('naEdit').addEventListener('click', () => {
+  const data = activeData();
+  const node = data && data.nodes.find(n => n.id === selectedNode);
+  if (node) openEditModal(node);
+});
+document.getElementById('naChild').addEventListener('click', () => {
+  if (selectedNode) openAddModal(selectedNode);
+});
+document.getElementById('naDel').addEventListener('click', () => {
+  deleteSelectedNode();
+  hideNodeActions();
+});
+
 // ═══════════════════════════════════════
 //  KEYBOARD
 // ═══════════════════════════════════════
 document.addEventListener('keydown', e => {
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
-  if (e.key === 'Delete' || e.key === 'Backspace') deleteSelectedNode();
-  if (e.key === 'Escape') { selectedNode = null; renderAll(); }
+  if (e.key === 'Delete' || e.key === 'Backspace') { deleteSelectedNode(); hideNodeActions(); }
+  if (e.key === 'Escape') { selectedNode = null; hideNodeActions(); renderAll(); }
+  if (e.key === 'e' || e.key === 'E') {
+    if (selectedNode) {
+      const data = activeData();
+      const node = data && data.nodes.find(n => n.id === selectedNode);
+      if (node) openEditModal(node);
+    }
+  }
   if (e.key === 'n' || e.key === 'N') openAddModal(selectedNode);
   if (e.key === 'f' || e.key === 'F') fitView();
 });
@@ -1244,7 +1448,7 @@ document.getElementById('btnAddChild').addEventListener('click', () => {
   if (!selectedNode) { alert('Please select a parent node first!'); return; }
   openAddModal(selectedNode);
 });
-document.getElementById('btnDelete').addEventListener('click', deleteSelectedNode);
+document.getElementById('btnDelete').addEventListener('click', () => { deleteSelectedNode(); hideNodeActions(); });
 document.getElementById('btnLayout').addEventListener('click', autoLayout);
 document.getElementById('btnFitView').addEventListener('click', fitView);
 
@@ -1256,25 +1460,47 @@ document.getElementById('nodeLabel').addEventListener('keydown', e => {
   if (e.key === 'Escape') hideModal('nodeModal');
 });
 
+let _canvasModalMode = 'new'; // 'new' | 'rename'
+
 document.getElementById('btnAddCanvas').addEventListener('click', () => {
+  _canvasModalMode = 'new';
   document.getElementById('canvasName').value = '';
   showModal('canvasModal');
   document.getElementById('canvasName').focus();
-});
-
-document.getElementById('canvasModalSave').addEventListener('click', () => {
-  const name = document.getElementById('canvasName').value.trim() || 'New Canvas';
-  const id = createCanvas(name);
-  state.activeCanvas = id;
-  renderTabs();
-  autoLayout();
-  renderAll();
-  hideModal('canvasModal');
 });
 document.getElementById('canvasModalCancel').addEventListener('click', () => hideModal('canvasModal'));
 document.getElementById('canvasName').addEventListener('keydown', e => {
   if (e.key === 'Enter') document.getElementById('canvasModalSave').click();
   if (e.key === 'Escape') hideModal('canvasModal');
+});
+
+// Inline title rename
+function openRenameCanvas() {
+  const data = activeData();
+  if (!data) return;
+  _canvasModalMode = 'rename';
+  document.getElementById('canvasName').value = data.name.replace(/^\p{Emoji}\s*/u, '');
+  showModal('canvasModal');
+  document.getElementById('canvasName').select();
+}
+document.getElementById('infoTitle').addEventListener('click', openRenameCanvas);
+document.getElementById('infoTitleEditBtn').addEventListener('click', openRenameCanvas);
+
+// Override canvasModalSave to handle both new and rename
+document.getElementById('canvasModalSave').addEventListener('click', () => {
+  const name = document.getElementById('canvasName').value.trim() || 'New Canvas';
+  if (_canvasModalMode === 'rename') {
+    const data = activeData();
+    if (data) { data.name = name; renderTabs(); renderInfoBar(data); }
+  } else {
+    const id = createCanvas(name);
+    state.activeCanvas = id;
+    renderTabs();
+    autoLayout();
+    renderAll();
+  }
+  hideModal('canvasModal');
+  _canvasModalMode = 'new';
 });
 
 // click outside modal closes it
@@ -1296,8 +1522,6 @@ function truncate(s, n) { return s.length > n ? s.slice(0, n) + '…' : s; }
 //  INIT
 // ═══════════════════════════════════════
 function init() {
-  buildCategoryPicker();
-
   // seed first canvas with sample nodes
   const id = createCanvas('🌸 My First Map');
   state.activeCanvas = id;
